@@ -1,5 +1,8 @@
 FROM python:3.10-slim
 
+# Unbuffered stdout
+ENV PYTHONUNBUFFERED=1
+
 # Install OS-level dependencies for image processing (Pillow needs these)
 RUN apt-get update && apt-get install -y \
     gcc \
@@ -23,5 +26,5 @@ COPY . .
 # Expose port
 EXPOSE 8000
 
-# Run FastAPI with Uvicorn
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+# Run FastAPI with Uvicorn (add log-level just in case)
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--log-level", "debug"]
