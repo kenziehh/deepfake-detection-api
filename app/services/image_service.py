@@ -13,12 +13,14 @@ transform = transforms.Compose([
 label_map = {0: "Fake", 1: "Real"}  
 
 def predict(image_file, model):
+    from PIL import Image
+    print("[DEBUG] Predict: opening image...")
+
     try:
         image = Image.open(image_file.file).convert("RGB")
-    except UnidentifiedImageError as e:
-        raise RuntimeError(f"Image cannot be identified. Possibly corrupted or unsupported: {str(e)}")
     except Exception as e:
-        raise RuntimeError(f"Image loading failed: {str(e)}")
+        print(f"[ERROR] PIL failed to open image: {e}")
+        raise
 
     image = transform(image).unsqueeze(0)
     with torch.no_grad():
