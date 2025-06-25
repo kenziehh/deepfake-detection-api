@@ -7,7 +7,8 @@ services:
       dockerfile: Dockerfile
     container_name: deepfake-app
     ports:
-      - "8000:8000"
+      - "8081:8000"  
     restart: always
     environment:
       - PYTHONUNBUFFERED=1
+
