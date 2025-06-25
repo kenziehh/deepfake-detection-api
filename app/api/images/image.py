@@ -14,9 +14,18 @@ async def predict_deepfake(file: UploadFile = File(...)):
 
     try:
         print(f"Received file: {file.filename}, content_type: {file.content_type}")
-        print(f"File size: {await file.read().__sizeof__()} bytes")
-        file.file.seek(0)  # reset pointer
+        
+        # ✅ Read file data once and get size
+        file_data = await file.read()
+        print(f"File size: {len(file_data)} bytes")
+        
+        # ✅ Reset file pointer for PIL
+        file.file.seek(0)
+
+        # ✅ Call prediction logic
         prediction, confidence = predict(file, model)
+        print(f"Prediction: {prediction}, Confidence: {confidence}")
+
         return ImagePredictionResponse(
             filename=file.filename,
             prediction=prediction,
