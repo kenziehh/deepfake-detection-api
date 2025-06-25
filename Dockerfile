@@ -10,11 +10,12 @@ RUN apt-get update && apt-get install -y \
     libpng-dev \
     libgl1-mesa-glx \
     libglib2.0-0 \
-    libtiff5 \
-    libopenjp2-7 \
+    libtiff-dev \
+    libopenjp2-7-dev \
     libwebp-dev \
     tzdata \
     && rm -rf /var/lib/apt/lists/*
+
 
 # Set working directory
 WORKDIR /app
