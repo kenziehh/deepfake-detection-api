@@ -13,6 +13,9 @@ async def predict_deepfake(file: UploadFile = File(...)):
         raise HTTPException(status_code=400, detail="File must be an image")
 
     try:
+        print(f"Received file: {file.filename}, content_type: {file.content_type}")
+        print(f"File size: {await file.read().__sizeof__()} bytes")
+        file.file.seek(0)  # reset pointer
         prediction, confidence = predict(file, model)
         return ImagePredictionResponse(
             filename=file.filename,
@@ -20,4 +23,5 @@ async def predict_deepfake(file: UploadFile = File(...)):
             confidence=confidence
         )
     except Exception as e:
+        print(f"Internal Error: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Prediction failed: {str(e)}")
