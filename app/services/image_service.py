@@ -1,46 +1,48 @@
 import cv2
 import numpy as np
 import torch
-
 from torchvision import transforms
-import traceback
-
-transform = transforms.Compose([
-    transforms.ToTensor(),
-    transforms.Resize((224, 224)),
-    transforms.Normalize([0.5] * 3, [0.5] * 3)
-])
 
 label_map = {0: "Fake", 1: "Real"}
 
-def predict(image_bytes_io, model):
-    print("[DEBUG] Predict using OpenCV...")
+transform = transforms.Compose([
+    transforms.ToTensor(),
+    transforms.Normalize([0.5]*3, [0.5]*3)
+])
 
+def predict(image_file, model):
     try:
-        # Baca buffer ke dalam NumPy array
-        image_bytes = image_bytes_io.read()
-        nparr = np.frombuffer(image_bytes, np.uint8)
+        # Cek jika pakai UploadFile FastAPI
+        if hasattr(image_file, "file"):
+            image_bytes = image_file.file.read()
+        else:
+            image_bytes = image_file.read()
 
-        # Decode image dari buffer
-        img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+        print(f"[DEBUG] image_bytes size: {len(image_bytes)}")
+
+        np_array = np.frombuffer(image_bytes, np.uint8)
+        img = cv2.imdecode(np_array, cv2.IMREAD_COLOR)
 
         if img is None:
-            raise ValueError("cv2 failed to decode image")
+            raise ValueError("OpenCV gagal decode gambar (img=None)")
 
-        # Konversi BGR ke RGB
+        img = cv2.resize(img, (224, 224))
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
-        # Resize + Normalize
-        img_tensor = transform(img).unsqueeze(0)  # shape: [1, 3, 224, 224]
+        transform = transforms.Compose([
+            transforms.ToTensor(),
+            transforms.Normalize([0.5]*3, [0.5]*3)
+        ])
 
-        # Predict
+        img_tensor = transform(img).unsqueeze(0)
+
+        print(f"[DEBUG] img_tensor shape: {img_tensor.shape}")
+
         with torch.no_grad():
             output = model(img_tensor)
             confidence, pred = torch.max(output, 1)
 
         return label_map[pred.item()]
-
     except Exception as e:
-        print(f"[ERROR] OpenCV predict error: {e}")
-        traceback.print_exc()
-        raise ValueError("Failed to process image with OpenCV")
+        print(f"[ERROR] Prediction failed: {e}")
+        raise RuntimeError("Failed to process image with OpenCV")
