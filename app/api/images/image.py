@@ -2,6 +2,8 @@ from fastapi import APIRouter, File, UploadFile, HTTPException
 from app.services.image_service import predict
 from app.schemas.image import ImagePredictionResponse
 from app.core.model import load_resnet_model
+from io import BytesIO
+
 
 router = APIRouter()
 
@@ -15,15 +17,12 @@ async def predict_deepfake(file: UploadFile = File(...)):
     try:
         print(f"Received file: {file.filename}, content_type: {file.content_type}")
         
-        # ✅ Read file data once and get size
         file_data = await file.read()
         print(f"File size: {len(file_data)} bytes")
-        
-        # ✅ Reset file pointer for PIL
-        file.file.seek(0)
 
-        # ✅ Call prediction logic
-        prediction, confidence = predict(file, model)
+        image_io = BytesIO(file_data)
+        prediction, confidence = predict(image_io, model)
+
         print(f"Prediction: {prediction}, Confidence: {confidence}")
 
         return ImagePredictionResponse(
@@ -31,6 +30,8 @@ async def predict_deepfake(file: UploadFile = File(...)):
             prediction=prediction,
             confidence=confidence
         )
+
     except Exception as e:
-        print(f"Internal Error: {str(e)}")
+        print(f"[ERROR] Prediction failed: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Prediction failed: {str(e)}")
+
