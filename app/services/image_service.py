@@ -37,8 +37,9 @@ def predict(image_bytes_io, model):
             output = model(img_tensor)
             confidence, pred = torch.max(output, 1)
 
-        return label_map[pred.item()], confidence.item()
+        return label_map[pred.item()]
 
     except Exception as e:
         print(f"[ERROR] OpenCV predict error: {e}")
+        print(e)
         raise ValueError("Failed to process image with OpenCV")
