@@ -3,6 +3,7 @@ import numpy as np
 import torch
 
 from torchvision import transforms
+import traceback
 
 transform = transforms.Compose([
     transforms.ToTensor(),
@@ -41,5 +42,5 @@ def predict(image_bytes_io, model):
 
     except Exception as e:
         print(f"[ERROR] OpenCV predict error: {e}")
-        print(e)
+        traceback.print_exc()
         raise ValueError("Failed to process image with OpenCV")
