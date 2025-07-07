@@ -12,7 +12,6 @@ transform = transforms.Compose([
 
 def predict(image_file, model):
     try:
-        # Cek jika pakai UploadFile FastAPI
         if hasattr(image_file, "file"):
             image_bytes = image_file.file.read()
         else:
@@ -42,7 +41,10 @@ def predict(image_file, model):
             output = model(img_tensor)
             confidence, pred = torch.max(output, 1)
 
-        return label_map[pred.item()]
+        return {
+            "label": label_map[pred.item()],
+            "confidence": round(confidence.item()/10, 4)  
+        }
     except Exception as e:
         print(f"[ERROR] Prediction failed: {e}")
         raise RuntimeError("Failed to process image with OpenCV")

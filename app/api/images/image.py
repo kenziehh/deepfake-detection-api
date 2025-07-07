@@ -21,12 +21,15 @@ async def predict_deepfake(file: UploadFile = File(...)):
         print(f"File size: {len(file_data)} bytes")
 
         image_io = BytesIO(file_data)
-        prediction = predict(image_io, model)
+        result = predict(image_io, model)
+        prediction = result["label"]
+        confidence = result["confidence"]
 
 
         return ImagePredictionResponse(
             filename=file.filename,
             prediction=prediction,
+            confidence=confidence
         )
 
     except Exception as e:
