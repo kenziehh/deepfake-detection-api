@@ -1,18 +1,27 @@
-annotated-types==0.7.0
+# FastAPI & Web Server
 fastapi==0.110.1
-httptools==0.6.4
-numpy==1.24.4
-pillow==11.2.1
-pip==23.0.1
-pydantic==2.11.7
-pydantic_core==2.33.2
-python-dotenv==1.1.1
+uvicorn[standard]==0.29.0
 python-multipart==0.0.20
-sympy==1.13.1
+python-dotenv==1.1.1
+
+# ML & Audio Processing
 torch==2.6.0
 torchvision==0.21.0
-uvicorn[standard]==0.29.0
-uvloop==0.21.0
+torchaudio==2.6.0
+transformers==4.41.2
+datasets==2.19.1
+soundfile==0.12.1
+
+
+# Utilitas dan dependensi tambahan
+pydantic==2.11.7
+pydantic_core==2.33.2
+numpy==1.24.4
+pillow==11.2.1
 opencv-python-headless==4.9.0.80
 typing-extensions==4.12.2
-
+annotated-types==0.7.0
+httptools==0.6.4
+sympy==1.13.1
+pip==23.0.1
+uvloop==0.21.0
