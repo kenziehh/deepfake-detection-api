@@ -8,13 +8,11 @@ pydantic==2.11.7
 pydantic_core==2.33.2
 python-dotenv==1.1.1
 python-multipart==0.0.20
-PyYAML==6.0.2
 sympy==1.13.1
 torch==2.6.0
 torchvision==0.21.0
 uvicorn[standard]==0.29.0
 uvloop==0.21.0
-wheel==0.45.1
 opencv-python-headless==4.9.0.80
 typing-extensions==4.12.2
 

@@ -2,7 +2,11 @@ __pycache__/
 *.pyc
 *.pyo
 *.pyd
+*.log
 *.db
-*.pth
 .env
+.git
+.gitignore
+Dockerfile
 venv/
+*.pth
