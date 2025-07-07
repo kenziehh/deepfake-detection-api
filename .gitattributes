@@ -1,1 +1,1 @@
-*.pth filter=lfs diff=lfs merge=lfs -text
+models/audios/wav2vec2_deepfake_audio.pth filter=lfs diff=lfs merge=lfs -text
