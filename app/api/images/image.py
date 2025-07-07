@@ -7,7 +7,7 @@ from io import BytesIO
 
 router = APIRouter()
 
-model = load_resnet_model("models/images/deepfake_resnet50.pth")
+model = load_resnet_model("models/images/deepfake_resnet50_image.pth")
 
 @router.post("/predict", response_model=ImagePredictionResponse)
 async def predict_deepfake(file: UploadFile = File(...)):
