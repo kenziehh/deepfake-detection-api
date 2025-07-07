@@ -18,7 +18,7 @@ def load_wav2vec2_model(path: str, device: torch.device = torch.device("cpu")):
         "facebook/wav2vec2-base",
         num_labels=2
     )
-    model.load_state_dict(torch.load(path, map_location=device))
+    model.load_state_dict(torch.load(path, map_location=device("cpu"), weights_only=False))
     model = model.to(device)
     model.eval()
     return processor, model
