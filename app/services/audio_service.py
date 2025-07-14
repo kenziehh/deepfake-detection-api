@@ -4,10 +4,30 @@ import numpy as np
 from io import BytesIO
 from app.core.model import load_wav2vec2_model
 from app.schemas.audio import AudioPredictionResponse
+import tempfile
+import os
+from pydub import AudioSegment
+
 
 async def predict_audio(file) -> AudioPredictionResponse:
     contents = await file.read()
-    waveform, sr = torchaudio.load(BytesIO(contents))
+    
+    # Try to load with different approaches
+    try:
+        # Jika file adalah M4A, convert ke WAV dulu
+        if file.filename.endswith('.m4a') or file.content_type == 'audio/m4a':
+            audio_segment = AudioSegment.from_file(BytesIO(contents), format="m4a")
+            wav_io = BytesIO()
+            audio_segment.export(wav_io, format="wav", parameters=["-ac", "1", "-ar", "16000"])
+            wav_io.seek(0)
+            waveform, sr = torchaudio.load(wav_io)
+        else:
+            # Coba load langsung
+            waveform, sr = torchaudio.load(BytesIO(contents))
+            
+    except Exception as e:
+        print(f"Error loading audio: {e}")
+        raise ValueError(f"Unable to load audio file: {str(e)}")
 
     if waveform.ndim == 2:
         waveform = waveform.mean(dim=0)
